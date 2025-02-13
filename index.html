@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/phaser@3.55.2/dist/phaser.min.js"></script>
+    <title>Exercício do Pássaro</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+
+<script>
+
+//config é uma variável em que se configuram o tipo, altura, e altura da página.
+var config = {
+    type: Phaser.AUTO,
+    width: 800,
+    height: 600,
+
+    scene: {
+        preload: preload,
+        create: create,
+        update: update
+    }
+};
+
+var game = new Phaser.Game(config);
+
+var passarinho;
+var passarinho2;
+
+//a função preload carrega arquivos (nesse caso fotos) no programa.
+function preload() {
+    this.load.image('bg', 'assets/bg_space.png');
+    //aqui, estou criando um sprite dos pássaros, dividindo as imagens em qudrados de 75x75 px para criar as animações
+    this.load.spritesheet('bird', 'assets/bird-red.png', { frameWidth: 75, frameHeight: 75 });
+    this.load.spritesheet('bird2', 'assets/bird-green.png', { frameWidth: 75, frameHeight: 75 });
+}
+
+//a função create cria esses arquivos dentro do site.
+function create() {
+    //adicionando o fundo e os dois passarinhos
+    this.add.image(400, 300, 'bg').setScale(1.2);
+    passarinho2 = this.add.sprite(400, 500, 'bird2').setScale(1.3).setAngle(60);
+    passarinho = this.add.sprite(100, 300, 'bird').setScale(1.3);
+    //criando a animação do primeiro passarinho (vermelho)
+    this.anims.create({
+        key: 'fly',
+        frames: this.anims.generateFrameNumbers('bird', { start: 0, end: 7 }),
+        frameRate: 10,
+        repeat: -1
+    });
+    passarinho.anims.play('fly', true);
+    //criando a animação do segundo passarinho (verde)
+    this.anims.create({
+        key: 'fly2',
+        frames: this.anims.generateFrameNumbers('bird2', { start: 0, end: 7 }),
+        frameRate: 10,
+        repeat: -1
+    });
+    passarinho2.anims.play('fly2', true);
+    
+}
+
+//a função update atualiza continuamente o estado de um objeto no programa. neste caso, a função upload
+//roda continuamente atualizando a posição do pássaro.
+function update() { 
+
+    //se a posição x do passarinho for 100, ou seja, no início, ele não deve espelhar sua posição
+    //nem no eixo x nem no eixo y, para que vá
+    if (passarinho.x === 100) {
+        passarinho.setFlip(false, false);
+        passarinho.ida = true;
+    };
+
+    //se a posição x do passarinho for menor que 700, ou seja, no meio do caminho,
+     //significa que ele está indo, e deve-se adicionar +5px em seu x a cada upload, imprimindo "ida"
+    if (passarinho.x < 700 && passarinho.ida === true) {
+        console.log("ida");
+        passarinho.x +=5;
+    };
+
+    //se a posição x do passarinho for 700, ou seja, no fim, ele deve espelhar sua posição
+    //no eixo x, para que volte
+    if (passarinho.x === 700) {
+        passarinho.setFlip(true, false);
+        passarinho.ida = false;
+    };
+
+    //se a posição x do passarinho for maior que 100, ou seja, no meio do caminho, mas voltando
+     //(passarinho.ida false), deve-se reduzir 5px em seu x a cada upload, imprimindo "volta"
+    if (passarinho.x > 100 && passarinho.ida === false) {
+        console.log ("volta");
+        passarinho.x -=5;
+    }
+
+    //se o passarinho estiver indo e sua posição x for maior que 400 (metade do caminho), ele deve subir 3px no eixo y
+    //a cada upload (o eixo y é orientado para baixo, por convenção)
+    if(passarinho.ida === true && passarinho.x > 400) {
+        passarinho.y -=3;
+    }
+
+    //se o passarinho estiver indo e sua posição x for menor que 400, ele deve descer 3px no eixo y
+    //a cada upload 
+    if(passarinho.ida === true && passarinho.x < 400) {
+        passarinho.y +=3;
+    }
+
+    //se o passarinho estiver voltando e sua posição x for maior que 400, ele deve subir 3px no eixo y
+    //a cada upload
+    if (passarinho.ida === false && passarinho.x > 400) {
+        passarinho.y -=3;
+    }
+
+    //se o passarinho estiver voltando e sua posição x for menor que 400, ele deve descer 3px no eixo y
+    //a cada upload
+    if (passarinho.ida === false && passarinho.x < 400) {
+        passarinho.y +=3;
+    }
+
+//agora, configurando o segundo passarinho. se o pássaro vermelho estiver indo, o verde deverá
+//subir no eixo y, mas sempre continuar na mesma posição do eixo x
+for (let i = 0; i < 2; i++) {
+    if (passarinho.ida === true) {
+        passarinho2.setFlip(true, false);
+        passarinho2.y -= 1.7;
+    }
+
+    //se o passarinho vermelho estiver voltando, o verde deverá descer no eixo y, mas ainda mantendo sua
+    //posição x constante.
+    if (passarinho.ida === false) {
+        passarinho2.setFlip(false, false);
+        passarinho2.y += 1.7;
+    }
+}
+}
+
+</script>
+
+</body>
+</html>
+
+
