@@ -125,10 +125,10 @@ function update() {
     if (passarinho.ida === false && passarinho.x < 400) {
         passarinho.y +=3;
     }
-
-//agora, configurando o segundo passarinho. se o pássaro vermelho estiver indo, o verde deverá
-//subir no eixo y, mas sempre continuar na mesma posição do eixo x
-for (let i = 0; i < 2; i++) {
+    
+    //agora, configurando o segundo passarinho. se o pássaro vermelho estiver indo, o verde deverá
+    //subir no eixo y, mas sempre continuar na mesma posição do eixo x
+   for (let i = 0; i < 2; i++) {
     if (passarinho.ida === true) {
         passarinho2.setFlip(true, false);
         passarinho2.y -= 1.7;
